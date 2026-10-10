@@ -1,0 +1,60 @@
+<div class="month">
+  <div class="weekdays">
+    @for (day of weekdays; track day) {
+      <div>
+        <span class="wd-full">{{ day }}</span>
+        <span class="wd-short">{{ day[0] }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="grid">
+    @for (week of weeks(); track week[0].key) {
+      @let model = weekModel(week);
+      <div class="week" [style.--lanes]="model.laneCount">
+        @for (cell of week; track cell.key) {
+          <button
+            type="button"
+            class="cell"
+            [class.muted]="!cell.inCurrentMonth"
+            [class.today]="cell.isToday"
+            (click)="createAt.emit(cell.date)"
+          >
+            <span class="num" [class.today-num]="cell.isToday">
+              {{ cell.monthLabel ?? cell.date.getDate() }}
+            </span>
+            <span class="timed">
+              @for (event of model.timedByDay[cell.key] ?? []; track event.id) {
+                <span
+                  class="chip"
+                  [style.--dot]="color(event).dot"
+                  (click)="$event.stopPropagation(); openEvent.emit(event)"
+                >
+                  {{ event.title }}
+                </span>
+              }
+            </span>
+          </button>
+        }
+
+        <div class="spans" [style.grid-template-rows]="'repeat(' + (model.laneCount || 1) + ', 22px)'">
+          @for (span of model.spans; track span.event.id) {
+            <button
+              type="button"
+              class="bar"
+              [class.cont-before]="span.continuesBefore"
+              [class.cont-after]="span.continuesAfter"
+              [style.grid-column]="span.col + ' / span ' + span.span"
+              [style.grid-row]="span.lane + 1"
+              [style.background]="color(span.event).bar"
+              [style.color]="color(span.event).text"
+              (click)="openEvent.emit(span.event)"
+            >
+              {{ span.event.title }}
+            </button>
+          }
+        </div>
+      </div>
+    }
+  </div>
+</div>

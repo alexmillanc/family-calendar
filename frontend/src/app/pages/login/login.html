@@ -1,0 +1,37 @@
+<div class="login-page">
+  <div class="panel brand">
+    <p class="eyebrow">Family Calendar</p>
+    <h1>Keep everyone on the same page.</h1>
+    <p class="lede">
+      A shared month, week and day view for practices, birthdays, trips and the little things that keep a household running.
+    </p>
+    <ul>
+      <li>Create, edit and delete events in a few clicks</li>
+      <li>Jump between day, week and month</li>
+      <li>Search the family schedule instantly</li>
+    </ul>
+  </div>
+
+  <form class="panel form" [formGroup]="form" (ngSubmit)="submit()">
+    <h2>Sign in</h2>
+    <p class="hint">Sign in with your backend username and password (API at localhost:8080).</p>
+
+    <label>
+      Username
+      <input type="text" formControlName="username" autocomplete="username" placeholder="yourusername" />
+    </label>
+
+    <label>
+      Password
+      <input type="password" formControlName="password" autocomplete="current-password" placeholder="••••••••" />
+    </label>
+
+    @if (error()) {
+      <p class="error" role="alert">{{ error() }}</p>
+    }
+
+    <button type="submit" class="primary" [disabled]="submitting()">
+      {{ submitting() ? 'Signing in…' : 'Continue' }}
+    </button>
+  </form>
+</div>

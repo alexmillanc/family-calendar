@@ -1,0 +1,80 @@
+<div class="shell">
+  <header class="toolbar">
+    <div class="left">
+      <button type="button" class="nav" (click)="step(-1)" aria-label="Previous">‹</button>
+      <button type="button" class="today" (click)="today()">Today</button>
+      <button type="button" class="nav" (click)="step(1)" aria-label="Next">›</button>
+      <h1>{{ title() }}</h1>
+    </div>
+
+    <div class="center">
+      <div class="segment">
+        @for (item of views; track item) {
+          <button type="button" [class.active]="view() === item" (click)="setView(item)">
+            {{ item }}
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="right">
+      <label class="search">
+        <span aria-hidden="true">⌕</span>
+        <input
+          type="search"
+          placeholder="Search"
+          [ngModel]="query()"
+          (ngModelChange)="query.set($event)"
+        />
+      </label>
+      <button type="button" class="add" (click)="openCreate(anchor())" aria-label="New event">
+        New<span class="add-rest"> event</span>
+      </button>
+      <button type="button" class="ghost" (click)="logout()">
+        <span class="user-email">{{ user()?.username }} · </span>Sign out
+      </button>
+    </div>
+  </header>
+
+  @if (loadError()) {
+    <p class="load-error" role="alert">{{ loadError() }}</p>
+  }
+
+  <main>
+    @switch (view()) {
+      @case ('month') {
+        <app-month-view
+          [anchor]="anchor()"
+          [events]="visibleEvents()"
+          (createAt)="openCreate($event)"
+          (openEvent)="openEvent($event)"
+        />
+      }
+      @case ('week') {
+        <app-week-view
+          [anchor]="anchor()"
+          [events]="visibleEvents()"
+          (createAt)="openCreate($event.date, $event.hour)"
+          (openEvent)="openEvent($event)"
+        />
+      }
+      @case ('day') {
+        <app-day-view
+          [anchor]="anchor()"
+          [events]="visibleEvents()"
+          (createAt)="openCreate($event.date, $event.hour)"
+          (openEvent)="openEvent($event)"
+        />
+      }
+    }
+  </main>
+</div>
+
+@if (dialog(); as data) {
+  <app-event-dialog
+    [data]="data"
+    (save)="saveEvent($event)"
+    (remove)="deleteEvent($event)"
+    (closed)="closeDialog()"
+  />
+}

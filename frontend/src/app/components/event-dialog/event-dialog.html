@@ -1,0 +1,81 @@
+<div class="backdrop" (click)="closed.emit()">
+  <section class="dialog" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    <header>
+      <h2>{{ isEdit() ? 'Edit event' : 'New event' }}</h2>
+      <button type="button" class="icon" (click)="closed.emit()" aria-label="Close">×</button>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        Title
+        <input formControlName="title" placeholder="What's happening?" />
+      </label>
+
+      <label>
+        Description
+        <textarea formControlName="description" rows="3" placeholder="Notes for the family"></textarea>
+      </label>
+
+      <label>
+        Address
+        <input formControlName="address" placeholder="Where?" />
+      </label>
+
+      <label class="check">
+        <input type="checkbox" formControlName="allDay" />
+        All day
+      </label>
+
+      <div class="row">
+        <label>
+          Start date
+          <input type="date" formControlName="date" />
+        </label>
+        @if (!form.controls.allDay.value) {
+          <label>
+            Start time
+            <input type="time" formControlName="time" />
+          </label>
+        }
+      </div>
+
+      <div class="row">
+        <label>
+          End date
+          <input type="date" formControlName="endDate" />
+        </label>
+        @if (!form.controls.allDay.value) {
+          <label>
+            End time
+            <input type="time" formControlName="endTime" />
+          </label>
+        }
+      </div>
+
+      <fieldset>
+        <legend>Color</legend>
+        <div class="swatches">
+          @for (color of colors; track color.id) {
+            <label class="swatch" [class.selected]="form.controls.color.value === color.id">
+              <input type="radio" formControlName="color" [value]="color.id" />
+              <span [style.background]="color.dot"></span>
+            </label>
+          }
+        </div>
+      </fieldset>
+
+      <footer>
+        @if (isEdit()) {
+          @if (!confirmDelete()) {
+            <button type="button" class="danger" (click)="requestDelete()">Delete</button>
+          } @else {
+            <button type="button" class="danger" (click)="confirmRemoval()">Confirm delete</button>
+          }
+        }
+        <span class="spacer"></span>
+        <button type="button" class="ghost" (click)="closed.emit()">Cancel</button>
+        <button type="submit" class="primary">Save</button>
+      </footer>
+    </form>
+  </section>
+</div>

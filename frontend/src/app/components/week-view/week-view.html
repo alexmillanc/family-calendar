@@ -1,0 +1,59 @@
+<div class="week-view">
+  <div class="header">
+    <div class="gutter"></div>
+    @for (day of days(); track day.key) {
+      <div class="head" [class.today]="day.isToday">
+        <span class="wd wd-full">{{ day.date.toLocaleDateString('en', { weekday: 'short' }).toUpperCase() }}</span>
+        <span class="wd wd-short">{{ day.date.toLocaleDateString('en', { weekday: 'narrow' }).toUpperCase() }}</span>
+        <span class="dn" [class.today-num]="day.isToday">{{ day.date.getDate() }}</span>
+      </div>
+    }
+  </div>
+
+  @let model = allDay();
+  <div class="all-day">
+    <div class="gutter"><span class="gutter-full">All day</span><span class="gutter-short">All</span></div>
+    <div class="all-day-grid" [style.--lanes]="model.laneCount || 1">
+      @for (day of days(); track day.key) {
+        <div class="slot"></div>
+      }
+      <div class="spans">
+        @for (span of model.spans; track span.event.id) {
+          <button
+            type="button"
+            class="bar"
+            [style.grid-column]="span.col + ' / span ' + span.span"
+            [style.grid-row]="span.lane + 1"
+            [style.background]="color(span.event).bar"
+            [style.color]="color(span.event).text"
+            (click)="openEvent.emit(span.event)"
+          >
+            {{ span.event.title }}
+          </button>
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="hours">
+      @for (hour of hours; track hour) {
+        <div class="hour-label">{{ hourLabel(hour) }}</div>
+      }
+    </div>
+    <div class="columns">
+      @for (day of days(); track day.key) {
+        <div class="col" [class.today]="day.isToday">
+          @for (hour of hours; track hour) {
+            <button type="button" class="slot" (click)="createAt.emit({ date: day.date, hour })"></button>
+          }
+          @for (event of timedEvents(day.key); track event.id) {
+            <button type="button" class="event" [style]="styleFor(event)" (click)="openEvent.emit(event)">
+              {{ event.title }}
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+</div>

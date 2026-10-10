@@ -1,0 +1,43 @@
+<div class="day-view">
+  <div class="all-day">
+    <div class="gutter"><span class="gutter-full">All day</span><span class="gutter-short">All</span></div>
+    <div class="all-day-list">
+      @for (event of allDayEvents(); track event.id) {
+        <button
+          type="button"
+          class="bar"
+          [style.background]="color(event).bar"
+          [style.color]="color(event).text"
+          (click)="openEvent.emit(event)"
+        >
+          {{ event.title }}
+        </button>
+      }
+      @if (!allDayEvents().length) {
+        <span class="empty">No all-day events</span>
+      }
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="hours">
+      @for (hour of hours; track hour) {
+        <div class="hour-label">{{ hourLabel(hour) }}</div>
+      }
+    </div>
+    <div class="col">
+      @for (hour of hours; track hour) {
+        <button type="button" class="slot" (click)="createAt.emit({ date: anchor(), hour })"></button>
+      }
+      @for (event of timedEvents(); track event.id) {
+        <button type="button" class="event" [style]="styleFor(event)" (click)="openEvent.emit(event)">
+          <strong>{{ event.title }}</strong>
+          <span>{{ timeLabel(event) }}</span>
+          @if (event.address) {
+            <span>{{ event.address }}</span>
+          }
+        </button>
+      }
+    </div>
+  </div>
+</div>
