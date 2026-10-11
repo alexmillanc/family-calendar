@@ -2,6 +2,11 @@
 .env
 boot-run.log
 
+# Local Railway CLI helpers
+.railway-*.graphql
+.railway-*.json
+.railway/
+
 # Backend
 backend/target/
 backend/.mvn/wrapper/maven-wrapper.jar
