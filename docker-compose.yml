@@ -5,6 +5,7 @@ services:
     ports:
       - "8081:8080"
     environment:
+      PORT: "8080"
       SERVER_PORT: "8080"
       SPRING_PROFILES_ACTIVE: docker
       SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
@@ -13,7 +14,10 @@ services:
     restart: unless-stopped
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        API_URL: /api
     container_name: family-calendar-frontend
     ports:
       - "4200:80"
