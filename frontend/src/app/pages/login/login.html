@@ -6,16 +6,13 @@
       A shared month, week and day view for practices, birthdays, trips and the little things that keep a household running.
     </p>
     <ul>
-      <li>Create, edit and delete events in a few clicks</li>
+      <li>Create, edit and delete events</li>
       <li>Jump between day, week and month</li>
       <li>Search the family schedule instantly</li>
     </ul>
   </div>
 
   <form class="panel form" [formGroup]="form" (ngSubmit)="submit()">
-    <h2>Sign in</h2>
-    <p class="hint">Sign in with your backend username and password (API at localhost:8080).</p>
-
     <label>
       Username
       <input type="text" formControlName="username" autocomplete="username" placeholder="yourusername" />
