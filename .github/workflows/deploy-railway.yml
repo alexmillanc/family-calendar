@@ -1,0 +1,32 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [master]
+
+concurrency:
+  group: railway-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      - name: Deploy backend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up ./backend --path-as-root --service backend --project 8ee8ebc3-5529-401f-9541-a9dece614eb3 --environment production --ci --detach
+
+  deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+      - name: Deploy frontend
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: railway up ./frontend --path-as-root --service frontend --project 8ee8ebc3-5529-401f-9541-a9dece614eb3 --environment production --ci --detach
