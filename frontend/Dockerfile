@@ -15,7 +15,8 @@ RUN sed -i "s|__API_URL__|${API_URL}|g" src/environments/environment.prod.ts \
 
 # Serve with nginx (Railway sets PORT)
 FROM nginx:1.27-alpine
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+ARG NGINX_CONF=nginx.conf
+COPY ${NGINX_CONF} /etc/nginx/conf.d/default.conf
 COPY --from=build /out /usr/share/nginx/html
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh

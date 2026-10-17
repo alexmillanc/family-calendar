@@ -105,13 +105,16 @@
 
 .chip {
   display: block;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
   font-size: 0.75rem;
   color: #202124;
   padding-left: 0.85rem;
   position: relative;
   white-space: nowrap;
   overflow: hidden;
-  text-overflow: clip;
+  text-overflow: ellipsis;
 }
 
 .chip::before {
@@ -193,37 +196,26 @@
   }
 
   .chip {
-    font-size: 0.62rem;
-    padding-left: 0.7rem;
+    font-size: 0.55rem;
+    padding-left: 0.6rem;
+    line-height: 1.25;
   }
 
   .chip::before {
-    width: 0.38rem;
-    height: 0.38rem;
-    top: 0.22rem;
+    width: 0.32rem;
+    height: 0.32rem;
+    top: 0.2rem;
+    left: 0.08rem;
   }
 
   .bar {
-    font-size: 0.62rem;
-    padding: 0 0.25rem;
+    font-size: 0.58rem;
+    padding: 0 0.2rem;
     height: 18px;
+    text-overflow: ellipsis;
   }
 
   .timed {
     margin-top: calc(var(--lanes) * 20px + 2px);
-  }
-}
-
-@media (max-width: 400px) {
-  .chip {
-    color: transparent;
-    padding-left: 0;
-    height: 0.55rem;
-  }
-
-  .chip::before {
-    top: 0.08rem;
-    left: 50%;
-    transform: translateX(-50%);
   }
 }
