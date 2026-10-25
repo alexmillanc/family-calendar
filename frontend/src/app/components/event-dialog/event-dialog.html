@@ -52,6 +52,39 @@
         }
       </div>
 
+      @if (!isEdit()) {
+        <label class="check">
+          <input type="checkbox" formControlName="repeat" (change)="onRepeatToggle($event)" />
+          Repeat
+        </label>
+
+        @if (form.controls.repeat.value) {
+          <div class="repeat">
+            <div class="row">
+              <label>
+                Every
+                <input type="number" formControlName="interval" min="1" step="1" />
+              </label>
+              <label>
+                Frequency
+                <select formControlName="frequency">
+                  <option value="WEEKLY">{{ unitLabel('week') }}</option>
+                  <option value="MONTHLY">{{ unitLabel('month') }}</option>
+                  <option value="YEARLY">{{ unitLabel('year') }}</option>
+                </select>
+              </label>
+            </div>
+            <label>
+              Until
+              <input type="date" formControlName="repeatUntil" [min]="form.controls.date.value" />
+            </label>
+            @if (repeatHint(); as hint) {
+              <p class="hint" [class.error]="hint.error">{{ hint.text }}</p>
+            }
+          </div>
+        }
+      }
+
       <fieldset>
         <legend>Color</legend>
         <div class="swatches">

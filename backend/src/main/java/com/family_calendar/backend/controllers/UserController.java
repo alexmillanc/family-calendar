@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.family_calendar.backend.dto.LoginRequest;
 import com.family_calendar.backend.entities.User;
+import com.family_calendar.backend.model.dto.LoginRequest;
 import com.family_calendar.backend.services.UserService;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)

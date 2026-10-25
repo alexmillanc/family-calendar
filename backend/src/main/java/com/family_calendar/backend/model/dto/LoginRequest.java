@@ -1,4 +1,4 @@
-package com.family_calendar.backend.dto;
+package com.family_calendar.backend.model.dto;
 
 public class LoginRequest {
 

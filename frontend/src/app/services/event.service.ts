@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, computed, inject, signal } from '@angular/core';
-import { Observable, map, of, tap } from 'rxjs';
+import { Observable, map, of, switchMap, tap } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { asEventColor, CalendarEvent, EventDraft } from '../models/calendar-event';
+import { asEventColor, CalendarEvent, EventDraft, EventSerie, Frequency } from '../models/calendar-event';
 import { AuthService } from './auth.service';
 
 interface ApiEvent {
@@ -18,6 +18,13 @@ interface ApiEvent {
   updatedAt?: string;
   deletedAt?: string | null;
   user?: { id: number } | null;
+  eventSerie?: {
+    id: number;
+    frequency: Frequency;
+    interval: number;
+    startDate: string;
+    endDate: string;
+  } | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -55,8 +62,14 @@ export class EventService {
 
   create(draft: EventDraft): Observable<CalendarEvent> {
     return this.http.post<ApiEvent>(`${environment.apiUrl}/event`, this.toApiBody(draft)).pipe(
-      map((created) => this.fromApi(created)),
-      tap((created) => this.eventsState.update((list) => [...list, created])),
+      switchMap((created) => {
+        const mapped = this.fromApi(created);
+        if (!draft.eventSerie) {
+          this.eventsState.update((list) => [...list, mapped]);
+          return of(mapped);
+        }
+        return this.load().pipe(map(() => mapped));
+      }),
     );
   }
 
@@ -94,7 +107,22 @@ export class EventService {
     if (id !== undefined) {
       body['id'] = id;
     }
+    if (draft.eventSerie) {
+      body['eventSerie'] = this.toSerieBody(draft.eventSerie);
+    }
     return body;
+  }
+
+  private toSerieBody(serie: EventSerie): Record<string, unknown> {
+    if (serie.id) {
+      return { id: serie.id };
+    }
+    return {
+      frequency: serie.frequency,
+      interval: serie.interval,
+      startDate: serie.startDate,
+      endDate: serie.endDate,
+    };
   }
 
   private fromApi(event: ApiEvent): CalendarEvent {
@@ -111,6 +139,15 @@ export class EventService {
       updatedAt: event.updatedAt,
       deletedAt: event.deletedAt,
       user: event.user ? { id: event.user.id } : null,
+      eventSerie: event.eventSerie
+        ? {
+            id: event.eventSerie.id,
+            frequency: event.eventSerie.frequency,
+            interval: event.eventSerie.interval,
+            startDate: event.eventSerie.startDate,
+            endDate: event.eventSerie.endDate,
+          }
+        : null,
     };
   }
 }

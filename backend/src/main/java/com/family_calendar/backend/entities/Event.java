@@ -55,6 +55,10 @@ public class Event {
     @JsonIgnoreProperties({ "events", "password" })
     private User user;
 
+    @JsonIgnoreProperties({ "events" })
+    @ManyToOne
+    private EventSerie eventSerie;
+
     // Empty constructor needed for JPA
     public Event() {
 
@@ -169,6 +173,14 @@ public class Event {
 
     public void setAllDay(boolean allDay) {
         this.allDay = allDay;
+    }
+
+    public EventSerie getEventSerie() {
+        return eventSerie;
+    }
+
+    public void setEventSerie(EventSerie eventSerie) {
+        this.eventSerie = eventSerie;
     }
 
 }

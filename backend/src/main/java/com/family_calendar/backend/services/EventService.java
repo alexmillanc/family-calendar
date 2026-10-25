@@ -10,18 +10,45 @@ import org.springframework.stereotype.Service;
 import com.family_calendar.backend.entities.Event;
 import com.family_calendar.backend.repositories.IEventRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class EventService {
 
     @Autowired
     private IEventRepository eventRepository;
 
-    public Event save(Event event) {
+    @Autowired 
+    private EventSerieService eventSerieService;
+
+    //  Transational to avoid that series stays in the database with no event if saving the event fails
+    @Transactional
+    public Event create(Event event) {
         LocalDateTime now = LocalDateTime.now();
+
         if (event.getCreatedAt() == null) {
             event.setCreatedAt(now);
         }
+        
         event.setUpdatedAt(now);
+
+        if (event.getEventSerie() != null) {
+            event.setEventSerie(eventSerieService.save(event.getEventSerie()));
+
+            // Occurrences already include the first date, so the template event is not saved again.
+            List<Event> ocurrences = eventSerieService.createOcurrences(event);
+            if (!ocurrences.isEmpty()) {
+                Event first = null;
+                for (Event occurrence : ocurrences) {
+                    Event saved = eventRepository.save(occurrence);
+                    if (first == null) {
+                        first = saved;
+                    }
+                }
+                return first;
+            }
+        }
+
         return eventRepository.save(event);
     }
 

@@ -1,5 +1,15 @@
 export type EventColor = 'green' | 'blue' | 'teal' | 'orange' | 'red' | 'purple';
 
+export type Frequency = 'WEEKLY' | 'MONTHLY' | 'YEARLY';
+
+export interface EventSerie {
+  id?: number;
+  frequency: Frequency;
+  interval: number;
+  startDate: string;
+  endDate: string;
+}
+
 const EVENT_COLOR_IDS: EventColor[] = ['green', 'blue', 'teal', 'orange', 'red', 'purple'];
 
 export interface CalendarEvent {
@@ -15,6 +25,7 @@ export interface CalendarEvent {
   updatedAt?: string;
   deletedAt?: string | null;
   user?: { id: number } | null;
+  eventSerie?: EventSerie | null;
 }
 
 export interface EventDraft {
@@ -25,6 +36,7 @@ export interface EventDraft {
   endDate: string;
   allDay: boolean;
   color: EventColor;
+  eventSerie?: EventSerie | null;
 }
 
 export const EVENT_COLORS: { id: EventColor; label: string; bar: string; text: string; dot: string }[] = [
