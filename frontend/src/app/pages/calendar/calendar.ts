@@ -80,8 +80,8 @@ export class CalendarPage implements OnInit {
     });
   }
 
-  deleteEvent(id: number): void {
-    this.eventsApi.remove(id).subscribe({
+  deleteEvent(payload: { id: number; deleteAllEventsFromSerie: boolean }): void {
+    this.eventsApi.remove(payload.id, payload.deleteAllEventsFromSerie).subscribe({
       next: () => this.closeDialog(),
       error: () => this.loadError.set('Could not delete the event.'),
     });

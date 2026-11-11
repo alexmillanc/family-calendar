@@ -99,10 +99,10 @@
 
       <footer>
         @if (isEdit()) {
-          @if (!confirmDelete()) {
-            <button type="button" class="danger" (click)="requestDelete()">Delete</button>
+          @if (!isSeries() && confirmDelete()) {
+            <button type="button" class="danger" (click)="confirmRemoval(false)">Confirm delete</button>
           } @else {
-            <button type="button" class="danger" (click)="confirmRemoval()">Confirm delete</button>
+            <button type="button" class="danger" (click)="requestDelete()">Delete</button>
           }
         }
         <span class="spacer"></span>
@@ -111,4 +111,23 @@
       </footer>
     </form>
   </section>
+
+  @if (confirmDelete() && isSeries()) {
+    <div class="choice-layer" (click)="cancelDelete(); $event.stopPropagation()">
+      <section
+        class="choice"
+        (click)="$event.stopPropagation()"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="delete-choice-title"
+      >
+        <h3 id="delete-choice-title">This event is part of a series</h3>
+        <div class="choice-actions">
+          <button type="button" class="ghost" (click)="confirmRemoval(false)">Delete this event</button>
+          <button type="button" class="danger solid" (click)="confirmRemoval(true)">Delete all events</button>
+          <button type="button" class="ghost" (click)="cancelDelete()">Cancel</button>
+        </div>
+      </section>
+    </div>
+  }
 </div>

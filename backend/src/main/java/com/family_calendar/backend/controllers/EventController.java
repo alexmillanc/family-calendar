@@ -51,8 +51,9 @@ public class EventController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable("id") int id) {
-        eventService.delete(id);
+    public void delete(@PathVariable("id") int id,
+            @RequestParam(name = "deleteAllEventsFromSerie", defaultValue = "false") boolean deleteAllEventsFromSerie) {
+        eventService.delete(id, deleteAllEventsFromSerie);
     }
 
 }

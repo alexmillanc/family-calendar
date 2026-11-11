@@ -20,13 +20,14 @@ export class EventDialog implements OnInit {
 
   readonly data = input.required<EventDialogData>();
   readonly save = output<{ id?: number; draft: EventDraft }>();
-  readonly remove = output<number>();
+  readonly remove = output<{ id: number; deleteAllEventsFromSerie: boolean }>();
   readonly closed = output<void>();
 
   readonly colors = EVENT_COLORS;
   readonly confirmDelete = signal(false);
 
   readonly isEdit = computed(() => !!this.data().event);
+  readonly isSeries = computed(() => this.data().event?.eventSerie?.id != null);
 
   readonly form = this.fb.nonNullable.group({
     title: ['', Validators.required],
@@ -159,9 +160,13 @@ export class EventDialog implements OnInit {
     this.confirmDelete.set(true);
   }
 
-  confirmRemoval(): void {
+  cancelDelete(): void {
+    this.confirmDelete.set(false);
+  }
+
+  confirmRemoval(deleteAllEventsFromSerie: boolean): void {
     const id = this.data().event?.id;
-    if (id !== undefined) this.remove.emit(id);
+    if (id !== undefined) this.remove.emit({ id, deleteAllEventsFromSerie });
   }
 }
 

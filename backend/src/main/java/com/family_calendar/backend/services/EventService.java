@@ -70,7 +70,7 @@ public class EventService {
     }
 
     @Transactional
-    public void delete(int id) {
+    public void delete(int id, boolean deleteAllEventsFromSerie) {
         Optional<Event> eventOptional = eventRepository.findById(id);
         if (eventOptional.isEmpty()) {
             return;
@@ -78,15 +78,26 @@ public class EventService {
 
         Event event = eventOptional.get();
         EventSerie eventSerie = event.getEventSerie();
+
         if (eventSerie == null) {
             eventRepository.delete(event);
             return;
         }
 
         int eventSerieId = eventSerie.getId();
-        eventRepository.deleteByEventSerie_Id(eventSerieId);
+
+        if (deleteAllEventsFromSerie) {
+            eventRepository.deleteByEventSerie_Id(eventSerieId);
+            eventSerieRepository.deleteById(eventSerieId);
+
+        } else {
+            eventRepository.delete(event);
+            if (eventRepository.findByEventSerie_Id(eventSerieId).isEmpty()) {
+                eventSerieRepository.deleteById(eventSerieId);
+            }
+        }
+       
         eventRepository.flush();
-        eventSerieRepository.deleteById(eventSerieId);
     }
 
     public Event update(Event event) {
