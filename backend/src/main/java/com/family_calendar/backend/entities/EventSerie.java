@@ -14,7 +14,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "event_serie")
+@Table(name = "event_series")
 public class EventSerie {
 
     @Id
@@ -39,6 +39,7 @@ public class EventSerie {
 
     // Empty constructor needed for JPA
     public EventSerie() {
+        
     }
 
     public EventSerie(Frequency frequency, int interval, LocalDateTime startDate, LocalDateTime endDate) {

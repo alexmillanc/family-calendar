@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.family_calendar.backend.entities.Event;
-import com.family_calendar.backend.entities.EventSerie;
 import com.family_calendar.backend.services.EventService;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
@@ -41,7 +40,6 @@ public class EventController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Event create(@RequestBody Event event) {
-        EventSerie eventSerie = event.getEventSerie();
         return eventService.create(event);
     }
 
@@ -57,7 +55,4 @@ public class EventController {
         eventService.delete(id);
     }
 
-    private void createAllEventsFromEventSerie(EventSerie eventSerie) {
-        
-    }
 }

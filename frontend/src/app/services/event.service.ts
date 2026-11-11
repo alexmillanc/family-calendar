@@ -83,8 +83,13 @@ export class EventService {
   }
 
   remove(id: number): Observable<void> {
+    const serieId = this.byId(id)?.eventSerie?.id;
     return this.http.delete<void>(`${environment.apiUrl}/event/${id}`).pipe(
-      tap(() => this.eventsState.update((list) => list.filter((event) => event.id !== id))),
+      tap(() =>
+        this.eventsState.update((list) =>
+          list.filter((event) => (serieId == null ? event.id !== id : event.eventSerie?.id !== serieId)),
+        ),
+      ),
     );
   }
 

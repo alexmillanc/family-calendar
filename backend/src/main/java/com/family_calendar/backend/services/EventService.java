@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.family_calendar.backend.entities.Event;
+import com.family_calendar.backend.entities.EventSerie;
 import com.family_calendar.backend.repositories.IEventRepository;
+import com.family_calendar.backend.repositories.IEventSerieRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -18,10 +20,13 @@ public class EventService {
     @Autowired
     private IEventRepository eventRepository;
 
-    @Autowired 
+    @Autowired
+    private IEventSerieRepository eventSerieRepository;
+
+    @Autowired
     private EventSerieService eventSerieService;
 
-    //  Transational to avoid that series stays in the database with no event if saving the event fails
+    // Transational to avoid that series stays in the database with no event if saving the event fails
     @Transactional
     public Event create(Event event) {
         LocalDateTime now = LocalDateTime.now();
@@ -29,7 +34,7 @@ public class EventService {
         if (event.getCreatedAt() == null) {
             event.setCreatedAt(now);
         }
-        
+
         event.setUpdatedAt(now);
 
         if (event.getEventSerie() != null) {
@@ -64,11 +69,24 @@ public class EventService {
         return eventRepository.findById(id).orElse(null);
     }
 
+    @Transactional
     public void delete(int id) {
-        Optional<Event> op = eventRepository.findById(id);
-        if (op.isPresent()) {
-            eventRepository.delete(op.get());
+        Optional<Event> eventOptional = eventRepository.findById(id);
+        if (eventOptional.isEmpty()) {
+            return;
         }
+
+        Event event = eventOptional.get();
+        EventSerie eventSerie = event.getEventSerie();
+        if (eventSerie == null) {
+            eventRepository.delete(event);
+            return;
+        }
+
+        int eventSerieId = eventSerie.getId();
+        eventRepository.deleteByEventSerie_Id(eventSerieId);
+        eventRepository.flush();
+        eventSerieRepository.deleteById(eventSerieId);
     }
 
     public Event update(Event event) {

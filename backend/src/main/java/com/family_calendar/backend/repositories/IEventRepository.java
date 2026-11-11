@@ -9,4 +9,8 @@ public interface IEventRepository extends JpaRepository<Event, Integer> {
 
     List<Event> findByUser_Id(int userId);
 
+    List<Event> findByEventSerie_Id(int eventSerieId);
+
+    void deleteByEventSerie_Id(int eventSerieId);
+
 }

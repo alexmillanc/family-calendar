@@ -8,17 +8,17 @@
     <form [formGroup]="form" (ngSubmit)="submit()">
       <label>
         Title
-        <input formControlName="title" placeholder="What's happening?" />
+        <input formControlName="title" />
       </label>
 
       <label>
         Description
-        <textarea formControlName="description" rows="3" placeholder="Notes for the family"></textarea>
+        <textarea formControlName="description" rows="3"></textarea>
       </label>
 
       <label>
         Address
-        <input formControlName="address" placeholder="Where?" />
+        <input formControlName="address" />
       </label>
 
       <label class="check">

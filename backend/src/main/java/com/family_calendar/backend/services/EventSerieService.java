@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,20 +14,26 @@ import com.family_calendar.backend.entities.EventSerie;
 import com.family_calendar.backend.model.constants.Frequency;
 import com.family_calendar.backend.repositories.IEventSerieRepository;
 
-@Service 
+@Service
 public class EventSerieService {
 
-    @Autowired 
+    @Autowired
     private IEventSerieRepository eventSerieRepository;
 
     public EventSerie save(EventSerie eventSerie) {
         return eventSerieRepository.save(eventSerie);
     }
 
+    /**
+     * Creates the occurrences of an event serie.
+     * 
+     * @param event
+     * @return
+     */
     public List<Event> createOcurrences(Event event) {
         List<Event> ocurrences = new ArrayList<>();
         EventSerie eventSerie = event.getEventSerie();
-        
+
         if (eventSerie == null) {
             return ocurrences;
         }
@@ -48,7 +55,7 @@ public class EventSerieService {
 
         while (!cursor.isAfter(endDate)) {
             LocalDateTime occurrenceEnd = duration == null ? null : cursor.plus(duration);
-            
+
             Event occurrence = new Event(
                     event.getTitle(),
                     event.getDescription(),
